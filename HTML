@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infrastruktur TI SMAN 1 Langsa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .presentation-container {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 40px;
+            text-align: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .slide.prev {
+            transform: translateX(-100px);
+        }
+
+        .slide h1 {
+            font-size: 3.5rem;
+            color: white;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .slide h2 {
+            font-size: 2.5rem;
+            color: #FFD700;
+            margin-bottom: 25px;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .slide p {
+            font-size: 1.3rem;
+            color: white;
+            max-width: 800px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        .stats-container {
+            display: flex;
+            gap: 40px;
+            margin: 30px 0;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .stat-box {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            min-width: 150px;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #FFD700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: white;
+            margin-top: 5px;
+        }
+
+        .network-diagram {
+            width: 600px;
+            height: 400px;
+            margin: 20px auto;
+            position: relative;
+            animation: fadeInUp 1s ease-out 0.8s both;
+        }
+
+        .layer {
+            position: absolute;
+            width: 100%;
+            height: 80px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            border: 2px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        .core-layer {
+            top: 0;
+            background: rgba(255, 215, 0, 0.3);
+            animation: slideInFromTop 1s ease-out 1s both;
+        }
+
+        .distribution-layer {
+            top: 120px;
+            background: rgba(30, 144, 255, 0.3);
+            animation: slideInFromLeft 1s ease-out 1.2s both;
+        }
+
+        .access-layer {
+            top: 240px;
+            background: rgba(50, 205, 50, 0.3);
+            animation: slideInFromRight 1s ease-out 1.4s both;
+        }
+
+        .server-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin: 30px 0;
+            animation: fadeInUp 1s ease-out 0.8s both;
+        }
+
+        .server-box {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            transform: translateY(20px);
+            animation: bounceIn 0.8s ease-out forwards;
+        }
+
+        .server-box:nth-child(1) { animation-delay: 1s; }
+        .server-box:nth-child(2) { animation-delay: 1.2s; }
+        .server-box:nth-child(3) { animation-delay: 1.4s; }
+
+        .server-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .security-layers {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            margin: 20px auto;
+        }
+
+        .security-circle {
+            position: absolute;
+            border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            animation: expandCircle 2s ease-out forwards;
+        }
+
+        .circle-1 {
+            width: 350px;
+            height: 350px;
+            top: 25px;
+            left: 25px;
+            background: rgba(220, 53, 69, 0.2);
+            animation-delay: 0.5s;
+        }
+
+        .circle-2 {
+            width: 250px;
+            height: 250px;
+            top: 75px;
+            left: 75px;
+            background: rgba(255, 193, 7, 0.2);
+            animation-delay: 0.7s;
+        }
+
+        .circle-3 {
+            width: 150px;
+            height: 150px;
+            top: 125px;
+            left: 125px;
+            background: rgba(40, 167, 69, 0.2);
+            animation-delay: 0.9s;
+        }
+
+        .ai-workflow {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 30px 0;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .workflow-step {
+            text-align: center;
+            position: relative;
+        }
+
+        .workflow-step::after {
+            content: '→';
+            position: absolute;
+            right: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            color: #FFD700;
+        }
+
+        .workflow-step:last-child::after {
+            display: none;
+        }
+
+        .step-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 2rem;
+            animation: pulse 2s infinite;
+        }
+
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            margin: 40px 0;
+            position: relative;
+            animation: fadeInUp 1s ease-out 0.8s both;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: rgba(255,255,255,0.3);
+            z-index: 1;
+        }
+
+        .timeline-item {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.2);
+            position: relative;
+            z-index: 2;
+            min-width: 150px;
+            animation: slideInFromBottom 1s ease-out forwards;
+        }
+
+        .timeline-item:nth-child(1) { animation-delay: 1s; }
+        .timeline-item:nth-child(2) { animation-delay: 1.2s; }
+        .timeline-item:nth-child(3) { animation-delay: 1.4s; }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1);
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            color: white;
+            background: rgba(0,0,0,0.3);
+            padding: 10px 20px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: #FFD700;
+            transition: width 0.3s ease;
+            z-index: 1000;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInFromTop {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInFromLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInFromRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInFromBottom {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px) scale(0.9);
+            }
+            50% {
+                transform: translateY(-5px) scale(1.05);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes expandCircle {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .auto-advance {
+            animation: autoAdvance 5s linear infinite;
+        }
+
+        @keyframes autoAdvance {
+            0%, 90% {
+                opacity: 1;
+            }
+            95%, 100% {
+                opacity: 0.7;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="slide-counter" id="slideCounter">1 / 7</div>
+    
+    <div class="presentation-container">
+        <!-- Slide 1: Opening -->
+        <div class="slide active" id="slide1">
+            <h1>🎓 INFRASTRUKTUR TI MODERN</h1>
+            <h2>SMAN 1 LANGSA</h2>
+            <p>Merancang sistem teknologi informasi yang scalable, secure, dan future-ready untuk mendukung pendidikan digital berkualitas</p>
+            <div class="stats-container">
+                <div class="stat-box">
+                    <span class="stat-number">800</span>
+                    <span class="stat-label">Siswa</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number">50</span>
+                    <span class="stat-label">Guru</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number">1</span>
+                    <span class="stat-label">Visi Digital</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Analisis Kebutuhan -->
+        <div class="slide" id="slide2">
+            <h2>📊 ANALISIS KEBUTUHAN</h2>
+            <p>SMAN 1 Langsa membutuhkan infrastruktur TI yang dapat mengakomodasi:</p>
+            <div class="server-grid">
+                <div class="server-box">
+                    <span class="server-icon">💻</span>
+                    <h3>E-Learning Platform</h3>
+                    <p>Pembelajaran digital dan manajemen kelas online</p>
+                </div>
+                <div class="server-box">
+                    <span class="server-icon">📚</span>
+                    <h3>Sistem Informasi Akademik</h3>
+                    <p>Database siswa, nilai, dan administrasi sekolah</p>
+                </div>
+                <div class="server-box">
+                    <span class="server-icon">📡</span>
+                    <h3>Jaringan WiFi</h3>
+                    <p>Coverage menyeluruh di 4 lantai gedung</p>
+                </div>
+            </div>
+            <p><strong>Target:</strong> Mendukung hingga 1200 users dengan performa optimal</p>
+        </div>
+
+        <!-- Slide 3: Arsitektur Jaringan -->
+        <div class="slide" id="slide3">
+            <h2>🌐 ARSITEKTUR JARINGAN</h2>
+            <p>Menggunakan <strong>Hierarchical Three-Layer Design</strong> untuk performa dan skalabilitas optimal</p>
+            <div class="network-diagram">
+                <div class="layer core-layer">
+                    🥇 CORE LAYER - Cisco Catalyst 9300 (Redundant)
+                </div>
+                <div class="layer distribution-layer">
+                    🔄 DISTRIBUTION LAYER - Per Lantai (VLAN Management)
+                </div>
+                <div class="layer access-layer">
+                    📱 ACCESS LAYER - 35 WiFi Access Points (Ubiquiti UniFi)
+                </div>
+            </div>
+            <div class="stats-container">
+                <div class="stat-box">
+                    <span class="stat-number">6</span>
+                    <span class="stat-label">VLAN Segments</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number">35</span>
+                    <span class="stat-label">WiFi Access Points</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Coverage Area</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Server Infrastructure -->
+        <div class="slide" id="slide4">
+            <h2>💾 SERVER INFRASTRUCTURE</h2>
+            <p>Tiga server dedicated untuk performa dan reliability maksimal</p>
+            <div class="server-grid">
+                <div class="server-box">
+                    <span class="server-icon">🖥️</span>
+                    <h3>Application Server</h3>
+                    <p>Dell PowerEdge R740<br>64GB RAM, SSD + HDD RAID</p>
+                </div>
+                <div class="server-box">
+                    <span class="server-icon">💿</span>
+                    <h3>File & Backup Server</h3>
+                    <p>Synology RS2421+<br>32TB Storage, RAID 6</p>
+                </div>
+                <div class="server-box">
+                    <span class="server-icon">🔐</span>
+                    <h3>Domain Controller</h3>
+                    <p>HP ProLiant DL380<br>Windows Server 2022</p>
+                </div>
+            </div>
+            <p><strong>Backup Strategy:</strong> Daily local + Weekly cloud + Monthly offsite</p>
+        </div>
+
+        <!-- Slide 5: Security Layers -->
+        <div class="slide" id="slide5">
+            <h2>🔒 MULTI-LAYER SECURITY</h2>
+            <p>Pendekatan keamanan berlapis untuk perlindungan maksimal</p>
+            <div class="security-layers">
+                <div class="security-circle circle-1">
+                    🛡️ FIREWALL<br>Perimeter Defense
+                </div>
+                <div class="security-circle circle-2">
+                    🔀 NETWORK<br>VLAN Segmentation
+                </div>
+                <div class="security-circle circle-3">
+                    🔐 ENDPOINT<br>Data Encryption
+                </div>
+            </div>
+            <div class="stats-container">
+                <div class="stat-box">
+                    <span class="stat-number">24/7</span>
+                    <span class="stat-label">Monitoring</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number">AES-256</span>
+                    <span class="stat-label">Encryption</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number">4 hrs</span>
+                    <span class="stat-label">Recovery Time</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: AI Integration -->
+        <div class="slide" id="slide6">
+            <h2>🤖 PEMANFAATAN AI</h2>
+            <p>Generative AI membantu dalam proses perancangan dan dokumentasi</p>
+            <div class="ai-workflow">
+                <div class="workflow-step">
+                    <div class="step-icon">📝</div>
+                    <h4>Documentation</h4>
+                    <p>Technical writing & templates</p>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-icon">📊</div>
+                    <h4>Visualization</h4>
+                    <p>Network diagrams & charts</p>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-icon">⚙️</div>
+                    <h4>Configuration</h4>
+                    <p>Code generation & optimization</p>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-icon">✅</div>
+                    <h4>Validation</h4>
+                    <p>Human expertise required</p>
+                </div>
+            </div>
+            <p><strong>Key Insight:</strong> AI meningkatkan efisiensi 60%, tetapi validasi manusia tetap essential untuk akurasi dan konteks</p>
+        </div>
+
+        <!-- Slide 7: Implementation & Results -->
+        <div class="slide" id="slide7">
+            <h2>🚀 IMPLEMENTASI & HASIL</h2>
+            <p>Roadmap implementasi sistematis dalam 6 bulan</p>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>🏗️ FASE 1</h4>
+                    <p>Core Infrastructure<br><small>Bulan 1-2</small></p>
+                </div>
+                <div class="timeline-item">
+                    <h4>📱 FASE 2</h4>
+                    <p>Applications & Migration<br><small>Bulan 3-4</small></p>
+                </div>
+                <div class="timeline-item">
+                    <h4>⚡ FASE 3</h4>
+                    <p>Optimization & Training<br><small>Bulan 5-6</small></p>
+                </div>
+            </div>
+            <div class="stats-container">
+                <div class="stat-box">
+                    <span class="stat-number">Rp 725M</span>
+                    <span class="stat-label">Total Investment</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number">1200</span>
+                    <span class="stat-label">User Capacity</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number">5+ years</span>
+                    <span class="stat-label">Future Ready</span>
+                </div>
+            </div>
+            <p><strong>Ready for:</strong> IoT Classrooms • AI Analytics • Cloud Integration • Mobile Learning</p>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" onclick="previousSlide()">‹</button>
+        <button class="nav-btn" onclick="toggleAutoAdvance()" id="playBtn">⏸️</button>
+        <button class="nav-btn" onclick="nextSlide()">›</button>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 7;
+        let autoAdvance = true;
+        let autoInterval;
+
+        function updateSlideDisplay() {
+            // Hide all slides
+            document.querySelectorAll('.slide').forEach(slide => {
+                slide.classList.remove('active', 'prev');
+            });
+            
+            // Show current slide
+            const current = document.getElementById(`slide${currentSlide}`);
+            current.classList.add('active');
+            
+            // Mark previous slide
+            if (currentSlide > 1) {
+                const prev = document.getElementById(`slide${currentSlide - 1}`);
+                prev.classList.add('prev');
+            }
+            
+            // Update counter and progress
+            document.getElementById('slideCounter').textContent = `${currentSlide} / ${totalSlides}`;
+            document.getElementById('progressBar').style.width = `${(currentSlide / totalSlides) * 100}%`;
+            
+            // Reset animations by cloning and replacing elements
+            const activeSlide = document.querySelector('.slide.active');
+            const animatedElements = activeSlide.querySelectorAll('[style*="animation"]');
+            animatedElements.forEach(el => {
+                el.style.animation = 'none';
+                el.offsetHeight; // Trigger reflow
+                el.style.animation = null;
+            });
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                updateSlideDisplay();
+            } else {
+                currentSlide = 1;
+                updateSlideDisplay();
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updateSlideDisplay();
+            } else {
+                currentSlide = totalSlides;
+                updateSlideDisplay();
+            }
+        }
+
+        function toggleAutoAdvance() {
+            const playBtn = document.getElementById('playBtn');
+            if (autoAdvance) {
+                autoAdvance = false;
+                clearInterval(autoInterval);
+                playBtn.textContent = '▶️';
+                playBtn.title = 'Start Auto-Advance';
+            } else {
+                autoAdvance = true;
+                startAutoAdvance();
+                playBtn.textContent = '⏸️';
+                playBtn.title = 'Pause Auto-Advance';
+            }
+        }
+
+        function startAutoAdvance() {
+            if (autoAdvance) {
+                autoInterval = setInterval(() => {
+                    nextSlide();
+                }, 5000); // 5 seconds per slide
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'ArrowRight':
+                case ' ':
+                    e.preventDefault();
+                    nextSlide();
+                    break;
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    previousSlide();
+                    break;
+                case 'Home':
+                    e.preventDefault();
+                    currentSlide = 1;
+                    updateSlideDisplay();
+                    break;
+                case 'End':
+                    e.preventDefault();
+                    currentSlide = totalSlides;
+                    updateSlideDisplay();
+                    break;
+                case 'p':
+                case 'P':
+                    e.preventDefault();
+                    toggleAutoAdvance();
+                    break;
+            }
+        });
+
+        // Touch/swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    nextSlide(); // Swipe left - next slide
+                } else {
+                    previousSlide(); // Swipe right - previous slide
+                }
+            }
+        }
+
+        // Initialize presentation
+        updateSlideDisplay();
+        startAutoAdvance();
+
+        // Add some interactive effects
+        document.addEventListener('mousemove', (e) => {
+            const cursor = document.createElement('div');
+            cursor.style.position = 'fixed';
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            cursor.style.width = '20px';
+            cursor.style.height = '20px';
+            cursor.style.background = 'rgba(255, 215, 0, 0.3)';
+            cursor.style.borderRadius = '50%';
+            cursor.style.pointerEvents = 'none';
+            cursor.style.zIndex = '9999';
+            cursor.style.transform = 'translate(-50%, -50%)';
+            cursor.style.animation = 'fadeOut 1s ease-out forwards';
+            
+            document.body.appendChild(cursor);
+            
+            setTimeout(() => {
+                if (cursor.parentNode) {
+                    cursor.parentNode.removeChild(cursor);
+                }
+            }, 1000);
+        });
+
+        // Add fade out animation for cursor effect
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeOut {
+                from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                to { opacity: 0; transform: translate(-50%, -50%) scale(2); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Console welcome message
+        console.log(`
+🎓 INFRASTRUKTUR TI SMAN 1 LANGSA
+====================================
+📊 Presentation Controls:
+• Arrow Keys: Navigate slides
+• Spacebar: Next slide  
+• P: Toggle auto-advance
+• Home/End: First/Last slide
+• Swipe: Mobile navigation
+
+🤖 AI-Powered Documentation
+Built with modern web technologies
+        `);
+    </script>
+</body>
+</html>
